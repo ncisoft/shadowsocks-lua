@@ -15,3 +15,9 @@
 *.exe
 *.out
 *.app
+
+# vim
+.*.sw[a-z]
+*.un~
+Session.vim
+
