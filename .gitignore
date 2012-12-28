@@ -21,3 +21,5 @@
 *.un~
 Session.vim
 
+# test
+test*.lua

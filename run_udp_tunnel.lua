@@ -22,6 +22,9 @@ local function print_usage_then_exit()
 	print("")
 	print("Examples:  run_udp_tunnel.lua --local_port 1194 --remote_ip 50.19.48.202 --remote_port 7070 --mode=local")
 	print("           run_udp_tunnel.lua --remote_port 7070 --upstream_ip 10.117.54.127 --upstream_port 1194 --mode=remote")
+	print("")
+	print("Note: If you want to use dll version of str_translate, please add -lmdm parameter, eg. lua -lmdm ...")
+	print("      If use luajit, will automatically use ffi version of str_translate")
 	os.exit(1)
 end
 

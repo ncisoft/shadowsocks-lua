@@ -8,7 +8,8 @@ local print = print
 local type = type
 local tostring = tostring
 local base = _G
-local ffi = (_G.jit ~= nil and _G.bit ~= nil and require("ffi")) or nil
+local ffi = (package.loaded.jit ~= nil and package.loaded.bit ~= nil and require("ffi")) or nil
+local mdm = package.loaded.mdm
 
 if ffi ~= nil then			-- smart load ffi
 	ffi.cdef[[
@@ -53,7 +54,24 @@ local function __translate_jit(str, trans_table)
 	return ffi.string(buf, buflen[0])
 end
 
-local __translate = (ffi ~= nil and __translate_jit) or __translate_lua
+local __trans_map = {}
+
+local function __translate_dll(str, tbl)
+	local trans = __trans_map[ tbl ]
+	if (trans == nil) then
+		trans = ""
+		for _,v in ipairs(tbl) do
+			trans = trans .. string.char(v)
+		end
+		__trans_map[ tbl ] = trans
+	end
+	mdm.str_translate(str, trans)
+end
+
+__translate_funcs = { lua = __translate_lua, jit = __translate_jit, dll = __translate_dll }
+
+-- loading order: (1) ffi; (2) dll; (3) pure lua
+__translate = (ffi ~= nil and __translate_jit) or (mdm ~= nil and __translate_dll) or __translate_lua
 
 local function new_remote_udp_sock(remote_ip, remote_port)
 	local remote_sock = socket.udp()
